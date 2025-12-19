@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Toddler Keyboard ABC Game</title>
   <style>
     :root{
       --ink:#0b1020;
 
-      /* Light defaults (used when toggled) */
+      /* Light (used when toggled) */
       --bg1:#ff7aa2;
       --bg2:#7afcff;
       --bg3:#fff07a;
@@ -27,7 +27,7 @@
       --glowB: rgba(0,0,0,.08);
     }
 
-    /* Dark mode theme (default) */
+    /* Dark mode (default) */
     html[data-theme="dark"]{
       --ink:#eef2ff;
 
@@ -37,7 +37,7 @@
       --bg4:#00ff9a;
 
       --card: rgba(20, 24, 40, .72);
-      --key: rgba(255,255,255,.08);
+      --key: rgba(255,255,255,.10);
 
       --shadow: 0 18px 55px rgba(0,0,0,.45);
       --keyShadow: 0 10px 18px rgba(0,0,0,.38);
@@ -45,10 +45,10 @@
       --keyPressed: rgba(255, 213, 79, .92);
       --muted:#eef2ffcc;
 
-      --gridA: rgba(255,255,255,.07);
-      --gridB: rgba(255,255,255,.03);
+      --gridA: rgba(255,255,255,.08);
+      --gridB: rgba(255,255,255,.04);
 
-      --glowA: rgba(0, 255, 213, .24);
+      --glowA: rgba(0, 255, 213, .26);
       --glowB: rgba(255, 0, 214, .18);
     }
 
@@ -60,6 +60,7 @@
       color: var(--ink);
       overflow:hidden;
       background: #060819;
+      touch-action: manipulation;
     }
 
     /* Animated background layers */
@@ -87,7 +88,6 @@
         linear-gradient(var(--gridA) 1px, transparent 1px),
         linear-gradient(90deg, var(--gridB) 1px, transparent 1px);
       background-size: 48px 48px;
-      transform: rotate(0deg);
       animation: drift 18s linear infinite;
       pointer-events:none;
     }
@@ -110,7 +110,6 @@
         0 0 22px var(--glowA),
         0 0 42px var(--glowB);
       opacity:.55;
-      transform: translate3d(0,0,0);
       animation: floaty var(--d) linear infinite;
     }
 
@@ -127,7 +126,7 @@
     @keyframes floaty{
       0%{
         transform: translate3d(var(--x), calc(100vh + 120px), 0) scale(1);
-        opacity:.0;
+        opacity: 0;
       }
       10%{ opacity: .55; }
       50%{ opacity: .7; }
@@ -144,6 +143,7 @@
       align-items:center;
       justify-content:space-between;
       padding: clamp(12px, 2.2vw, 24px);
+      padding-bottom: calc(clamp(12px, 2.2vw, 24px) + env(safe-area-inset-bottom));
       gap: 12px;
     }
 
@@ -180,6 +180,7 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
+
     .pill{
       border:0;
       border-radius:999px;
@@ -193,6 +194,7 @@
       user-select:none;
       transition: transform 120ms ease, background 200ms ease, opacity 200ms ease;
       backdrop-filter: blur(10px);
+      -webkit-tap-highlight-color: transparent;
     }
     html[data-theme="light"] .pill{
       background: #ffffffcc;
@@ -205,10 +207,12 @@
 
     main{
       width: min(1000px, 96vw);
-      display:flex;
-      flex-direction:column;
+      display:grid;
+      grid-template-columns: 1fr;
       gap: clamp(10px, 2vw, 18px);
       align-items:stretch;
+      flex: 1 1 auto;
+      min-height: 0;
     }
 
     .card{
@@ -218,7 +222,7 @@
       box-shadow: var(--shadow);
       padding: clamp(16px, 2.8vw, 26px);
       overflow:hidden;
-      min-height: clamp(360px, 52vh, 520px);
+      min-height: 0;
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -243,7 +247,7 @@
 
     .sub{
       margin: 12px 0 0;
-      font-size: clamp(22px, 3.4vw, 34px);
+      font-size: clamp(20px, 3.4vw, 34px);
       font-weight: 900;
     }
 
@@ -292,6 +296,7 @@
       gap: 10px;
       user-select:none;
       backdrop-filter: blur(12px);
+      min-height: 0;
     }
     html[data-theme="light"] .keyboard{ backdrop-filter:none; }
 
@@ -333,13 +338,19 @@
       font-weight: 900;
       font-size: 18px;
       letter-spacing: .4px;
-      position:relative;
       transition: transform 90ms ease, background 120ms ease, box-shadow 120ms ease, color 120ms ease;
       color: var(--ink);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     html[data-theme="dark"] .key{
       outline: 1px solid rgba(255,255,255,.08);
+    }
+
+    .key:active{
+      transform: translateY(1px) scale(1.02);
     }
 
     .key.pressed{
@@ -392,6 +403,47 @@
       position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
       clip: rect(0,0,0,0); white-space:nowrap; border:0;
     }
+
+    /* Mobile and tablet tuning */
+    @media (max-width: 900px){
+      body{ overflow:auto; }
+      .wrap{ height:auto; min-height:100%; }
+      main{ flex: 0 0 auto; }
+    }
+
+    @media (max-width: 700px){
+      header{ align-items:flex-start; }
+      .controls{ gap: 8px; }
+      .pill{ padding: 9px 12px; font-size: 13px; }
+      .card{ border-radius: 24px; }
+      .keyboard{ border-radius: 24px; }
+
+      /* Touch-friendly keys */
+      .key{
+        height: 58px;
+        min-width: 52px;
+        max-width: 52px;
+        font-size: 20px;
+        border-radius: 16px;
+      }
+      .wider{
+        max-width: 220px;
+        flex: 0 0 220px;
+      }
+
+      /* Keep QWERTY but allow horizontal swipe per row */
+      .row{
+        justify-content:flex-start;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        scroll-snap-type: x mandatory;
+      }
+      .key{ scroll-snap-align: start; }
+
+      /* Make keyboard feel like the "controls area" under the big letter */
+      main{ gap: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -403,7 +455,7 @@
     <header>
       <div class="title">
         <h1>Keyboard ABC Play</h1>
-        <div class="hint">Press letters or numbers on your keyboard</div>
+        <div class="hint">Press keys or tap the on-screen buttons</div>
       </div>
       <div class="controls">
         <button id="themeBtn" class="pill on" type="button" aria-pressed="true">Theme: Dark</button>
@@ -419,14 +471,14 @@
         <div class="spark" id="spark"></div>
         <p class="big" id="big">A</p>
         <div class="sub" id="sub">Apple 🍎</div>
-        <div class="phrase" id="phrase">Press any key to begin!</div>
-        <div class="sr-only" id="sr">Press any letter or number on the keyboard.</div>
+        <div class="phrase" id="phrase">Press a key or tap a button below!</div>
+        <div class="sr-only">Press any letter or number on the keyboard.</div>
       </section>
 
-      <aside class="keyboard" aria-label="On-screen keyboard">
+      <aside class="keyboard" aria-label="On-screen keys">
         <div class="kbTitle">
-          <div class="label">Keys (what you press)</div>
-          <div class="small">Pressed key lights up</div>
+          <div class="label">Tap keys (works on phones and iPads)</div>
+          <div class="small">Swipe sideways on a row if needed</div>
         </div>
 
         <div class="row" id="rowNums"></div>
@@ -439,12 +491,12 @@
 
     <footer>
       <div class="badge">Tip: Try A S D then J K L</div>
-      <div class="badge">If voice is silent, click once to allow audio</div>
+      <div class="badge">If voice is silent, tap once to allow audio</div>
     </footer>
   </div>
 
   <script>
-    // Default: dark mode
+    // Default theme: dark
     const htmlEl = document.documentElement;
     htmlEl.setAttribute("data-theme", "dark");
 
@@ -477,7 +529,11 @@
     let voiceOn = true;
     let beepOn = true;
 
-    // Speech synthesis
+    function tinyVibrate(){
+      if ("vibrate" in navigator) navigator.vibrate(15);
+    }
+
+    // Speech
     function speak(text){
       if (!voiceOn) return;
       if (!("speechSynthesis" in window)) return;
@@ -503,7 +559,7 @@
       window.speechSynthesis.getVoices();
     });
 
-    // Optional beep
+    // Beep
     let audioCtx = null;
     function ensureAudio(){
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -573,9 +629,8 @@
       }
     }
 
-    // Extra exciting background bubbles
+    // Background bubbles
     const bgBubbles = document.getElementById("bgBubbles");
-
     function randomBetween(a,b){ return a + Math.random()*(b-a); }
 
     function spawnBubble(){
@@ -594,30 +649,21 @@
 
       bgBubbles.appendChild(b);
 
-      // Remove after animation ends
       const ms = parseFloat(d) * 1000 + 400;
       setTimeout(() => b.remove(), ms);
     }
 
-    // Keep a lively but not overwhelming bubble count
-    function startBubbles(){
-      // Seed a few immediately
+    (function startBubbles(){
       for (let i=0;i<10;i++) spawnBubble();
-      // Then keep spawning
       setInterval(() => {
         const count = bgBubbles.childElementCount;
         const want = 14;
-        if (count < want){
-          spawnBubble();
-        } else if (Math.random() < 0.35){
-          spawnBubble();
-        }
+        if (count < want) spawnBubble();
+        else if (Math.random() < 0.35) spawnBubble();
       }, 650);
-    }
+    })();
 
-    startBubbles();
-
-    // On-screen keyboard
+    // On-screen keyboard (clickable)
     const layout = {
       nums: ["1","2","3","4","5","6","7","8","9","0"],
       r1: ["Q","W","E","R","T","Y","U","I","O","P"],
@@ -627,56 +673,6 @@
     };
 
     const keyEls = new Map();
-
-    function makeKey(label){
-      const el = document.createElement("div");
-      el.className = "key";
-      el.dataset.key = label;
-      if (label === "SPACE"){
-        el.classList.add("wider");
-        el.textContent = "SPACE";
-      } else {
-        el.textContent = label;
-      }
-      return el;
-    }
-
-    function buildKeyboard(){
-      const rowNums = document.getElementById("rowNums");
-      const row1 = document.getElementById("row1");
-      const row2 = document.getElementById("row2");
-      const row3 = document.getElementById("row3");
-      const rowSpace = document.getElementById("rowSpace");
-      [rowNums,row1,row2,row3,rowSpace].forEach(r => r.innerHTML = "");
-
-      layout.nums.forEach(k => {
-        const el = makeKey(k);
-        rowNums.appendChild(el);
-        keyEls.set(k, el);
-      });
-      layout.r1.forEach(k => {
-        const el = makeKey(k);
-        row1.appendChild(el);
-        keyEls.set(k, el);
-      });
-      layout.r2.forEach(k => {
-        const el = makeKey(k);
-        row2.appendChild(el);
-        keyEls.set(k, el);
-      });
-      layout.r3.forEach(k => {
-        const el = makeKey(k);
-        row3.appendChild(el);
-        keyEls.set(k, el);
-      });
-
-      const spaceEl = makeKey("SPACE");
-      document.getElementById("rowSpace").appendChild(spaceEl);
-      keyEls.set("SPACE", spaceEl);
-    }
-
-    buildKeyboard();
-
     let lastPressedEl = null;
     let clearTimer = null;
 
@@ -698,7 +694,6 @@
     }
 
     function showChar(char){
-      // Re-trigger pop animation
       big.style.animation = "none";
       void big.offsetWidth;
       big.style.animation = "";
@@ -719,6 +714,7 @@
 
       phrase.textContent = cheerPhrases[Math.floor(Math.random() * cheerPhrases.length)];
       burst();
+      tinyVibrate();
 
       beepFor(char);
       if (/^[A-Z]$/.test(char)) speak(char);
@@ -726,28 +722,91 @@
       else if (char === "SPACE") speak("space");
     }
 
+    function pressKey(label){
+      // label is "A".."Z", "0".."9", or "SPACE"
+      highlightKey(label);
+      showChar(label);
+    }
+
+    function makeKey(label){
+      const el = document.createElement("div");
+      el.className = "key";
+      el.dataset.key = label;
+      el.setAttribute("role", "button");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-label", label === "SPACE" ? "Space" : label);
+
+      if (label === "SPACE"){
+        el.classList.add("wider");
+        el.textContent = "SPACE";
+      } else {
+        el.textContent = label;
+      }
+
+      // Pointer works for mouse, touch, pen
+      el.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        pressKey(label);
+      });
+
+      // Keyboard accessibility (Enter/Space activates)
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          pressKey(label);
+        }
+      });
+
+      return el;
+    }
+
+    function buildKeyboard(){
+      const rowNums = document.getElementById("rowNums");
+      const row1 = document.getElementById("row1");
+      const row2 = document.getElementById("row2");
+      const row3 = document.getElementById("row3");
+      const rowSpace = document.getElementById("rowSpace");
+      [rowNums,row1,row2,row3,rowSpace].forEach(r => r.innerHTML = "");
+
+      function addRow(container, keys){
+        keys.forEach(k => {
+          const el = makeKey(k);
+          container.appendChild(el);
+          keyEls.set(k, el);
+        });
+      }
+
+      addRow(rowNums, layout.nums);
+      addRow(row1, layout.r1);
+      addRow(row2, layout.r2);
+      addRow(row3, layout.r3);
+
+      const spaceEl = makeKey("SPACE");
+      rowSpace.appendChild(spaceEl);
+      keyEls.set("SPACE", spaceEl);
+    }
+
+    buildKeyboard();
+
+    // Physical keyboard support
     function handleKeydown(e){
       if (e.repeat) return;
 
       const k = e.key;
 
       if (k === " " || k === "Spacebar"){
-        highlightKey("SPACE");
-        showChar("SPACE");
         e.preventDefault();
+        pressKey("SPACE");
         return;
       }
 
       if (/^[a-zA-Z]$/.test(k)){
-        const up = k.toUpperCase();
-        highlightKey(up);
-        showChar(up);
+        pressKey(k.toUpperCase());
         return;
       }
 
       if (/^[0-9]$/.test(k)){
-        highlightKey(k);
-        showChar(k);
+        pressKey(k);
         return;
       }
 
@@ -806,23 +865,18 @@
     resetBtn.addEventListener("click", () => {
       big.textContent = "A";
       sub.textContent = "Apple 🍎";
-      phrase.textContent = "Press any key to begin!";
+      phrase.textContent = "Press a key or tap a button below!";
       if (lastPressedEl) lastPressedEl.classList.remove("pressed");
       lastPressedEl = null;
       spark.innerHTML = "";
       window.speechSynthesis?.cancel?.();
     });
 
-    // Prime audio on first click/tap
+    // Prime audio on first interaction (tap counts on iOS)
     window.addEventListener("pointerdown", () => {
       if (beepOn) ensureAudio();
       if (voiceOn && "speechSynthesis" in window) window.speechSynthesis.getVoices();
     }, { once: true });
-
-    // Keep background responsive on resize
-    window.addEventListener("resize", () => {
-      // Let bubbles adapt naturally; no heavy work needed
-    });
   </script>
 </body>
 </html>
