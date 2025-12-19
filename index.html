@@ -137,7 +137,7 @@
     }
 
     .wrap{
-      height:100%;
+      min-height: 100svh;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -150,7 +150,7 @@
     header{
       width: min(1000px, 96vw);
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap: 10px;
       user-select:none;
@@ -158,14 +158,15 @@
 
     .title{
       display:flex;
-      align-items:baseline;
-      gap: 10px;
-      flex-wrap:wrap;
+      flex-direction:column;
+      gap: 6px;
+      min-width: 180px;
     }
     .title h1{
       margin:0;
       font-size: clamp(18px, 2.8vw, 28px);
       letter-spacing: .2px;
+      line-height: 1.1;
     }
     .title .hint{
       font-size: clamp(12px, 2.2vw, 16px);
@@ -195,6 +196,7 @@
       transition: transform 120ms ease, background 200ms ease, opacity 200ms ease;
       backdrop-filter: blur(10px);
       -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
     html[data-theme="light"] .pill{
       background: #ffffffcc;
@@ -222,7 +224,6 @@
       box-shadow: var(--shadow);
       padding: clamp(16px, 2.8vw, 26px);
       overflow:hidden;
-      min-height: 0;
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -230,11 +231,12 @@
       text-align:center;
       user-select:none;
       backdrop-filter: blur(12px);
+      min-height: 0;
     }
     html[data-theme="light"] .card{ backdrop-filter:none; }
 
     .big{
-      font-size: clamp(150px, 24vw, 280px);
+      font-size: clamp(140px, 24vw, 280px);
       line-height: .95;
       margin: 0;
       letter-spacing: 2px;
@@ -246,14 +248,14 @@
     }
 
     .sub{
-      margin: 12px 0 0;
-      font-size: clamp(20px, 3.4vw, 34px);
+      margin: 10px 0 0;
+      font-size: clamp(18px, 3.2vw, 34px);
       font-weight: 900;
     }
 
     .phrase{
       margin: 8px 0 0;
-      font-size: clamp(14px, 2.2vw, 18px);
+      font-size: clamp(13px, 2.2vw, 18px);
       color: var(--muted);
       font-weight:800;
     }
@@ -325,9 +327,8 @@
     }
 
     .key{
-      flex: 1 1 0;
-      min-width: 32px;
-      max-width: 62px;
+      flex: 0 0 auto;
+      width: 56px;
       height: 52px;
       border-radius: 14px;
       background: var(--key);
@@ -343,6 +344,7 @@
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
+      user-select:none;
     }
 
     html[data-theme="dark"] .key{
@@ -361,7 +363,10 @@
       color: #0b1020;
     }
 
-    .wider{ max-width: 180px; flex: 2.6 1 0; }
+    .wider{
+      width: 300px;
+      max-width: 100%;
+    }
 
     footer{
       width:min(1000px, 96vw);
@@ -399,50 +404,101 @@
       100%{ transform: translateX(0); }
     }
 
-    .sr-only{
-      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
-      clip: rect(0,0,0,0); white-space:nowrap; border:0;
-    }
+    /* iPhone-friendly layout */
+    @media (max-width: 520px){
+      body{ overflow:hidden; }
 
-    /* Mobile and tablet tuning */
-    @media (max-width: 900px){
-      body{ overflow:auto; }
-      .wrap{ height:auto; min-height:100%; }
-      main{ flex: 0 0 auto; }
-    }
+      .wrap{
+        padding: 12px;
+        padding-top: calc(10px + env(safe-area-inset-top));
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        gap: 10px;
+      }
 
-    @media (max-width: 700px){
-      header{ align-items:flex-start; }
-      .controls{ gap: 8px; }
-      .pill{ padding: 9px 12px; font-size: 13px; }
-      .card{ border-radius: 24px; }
-      .keyboard{ border-radius: 24px; }
+      header, main, footer{
+        width: 100%;
+      }
 
-      /* Touch-friendly keys */
+      .title{
+        min-width: 0;
+      }
+
+      .controls{
+        gap: 8px;
+      }
+
+      .pill{
+        padding: 9px 12px;
+        font-size: 13px;
+      }
+
+      main{
+        grid-template-rows: minmax(0, 0.42fr) minmax(0, 0.58fr);
+        gap: 10px;
+      }
+
+      .card{
+        border-radius: 22px;
+        padding: 14px;
+      }
+
+      .big{
+        font-size: clamp(120px, 32vw, 210px);
+      }
+
+      .sub{
+        font-size: clamp(18px, 5vw, 26px);
+      }
+
+      .keyboard{
+        border-radius: 22px;
+        padding: 12px;
+        gap: 8px;
+      }
+
+      /* Fit full rows on iPhone (no horizontal scrolling) */
+      .row{
+        gap: 6px;
+        justify-content:center;
+      }
+
       .key{
-        height: 58px;
-        min-width: 52px;
-        max-width: 52px;
-        font-size: 20px;
-        border-radius: 16px;
+        width: 36px;
+        height: 52px;
+        border-radius: 14px;
+        font-size: 18px;
+      }
+
+      /* small offsets to feel more like a real keyboard */
+      #row1{ padding-left: 0px; }
+      #row2{ padding-left: 10px; }
+      #row3{ padding-left: 22px; }
+
+      #rowSpace{
+        justify-content:center;
       }
       .wider{
-        max-width: 220px;
-        flex: 0 0 220px;
+        width: min(320px, 90vw);
+        height: 54px;
+        font-size: 18px;
       }
 
-      /* Keep QWERTY but allow horizontal swipe per row */
-      .row{
-        justify-content:flex-start;
-        overflow-x:auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 6px;
-        scroll-snap-type: x mandatory;
+      /* Keep footer compact */
+      footer{
+        gap: 8px;
       }
-      .key{ scroll-snap-align: start; }
+      footer .badge{
+        font-size: 11px;
+      }
+    }
 
-      /* Make keyboard feel like the "controls area" under the big letter */
-      main{ gap: 12px; }
+    /* Slightly larger phones */
+    @media (min-width: 521px) and (max-width: 700px){
+      header, main, footer{ width: 100%; }
+      .key{ width: 44px; }
+      .wider{ width: min(360px, 92vw); }
+      #row2{ padding-left: 10px; }
+      #row3{ padding-left: 18px; }
     }
   </style>
 </head>
@@ -472,13 +528,12 @@
         <p class="big" id="big">A</p>
         <div class="sub" id="sub">Apple 🍎</div>
         <div class="phrase" id="phrase">Press a key or tap a button below!</div>
-        <div class="sr-only">Press any letter or number on the keyboard.</div>
       </section>
 
       <aside class="keyboard" aria-label="On-screen keys">
         <div class="kbTitle">
           <div class="label">Tap keys (works on phones and iPads)</div>
-          <div class="small">Swipe sideways on a row if needed</div>
+          <div class="small">No keyboard needed</div>
         </div>
 
         <div class="row" id="rowNums"></div>
@@ -723,7 +778,6 @@
     }
 
     function pressKey(label){
-      // label is "A".."Z", "0".."9", or "SPACE"
       highlightKey(label);
       showChar(label);
     }
@@ -743,13 +797,11 @@
         el.textContent = label;
       }
 
-      // Pointer works for mouse, touch, pen
       el.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         pressKey(label);
       });
 
-      // Keyboard accessibility (Enter/Space activates)
       el.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " "){
           e.preventDefault();
