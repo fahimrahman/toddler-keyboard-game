@@ -2,8 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Toddler Keyboard ABC Game</title>
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
+  <title>Little Typist ABC</title>
+
+  <!-- Simple built-in favicon (no extra files needed) -->
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3CradialGradient id='g' cx='30%25' cy='30%25' r='80%25'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='0.5' stop-color='%235a2bff'/%3E%3Cstop offset='1' stop-color='%2300ff9a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x='10' y='10' width='108' height='108' rx='26' fill='url(%23g)'/%3E%3Ctext x='64' y='78' text-anchor='middle' font-family='Arial, sans-serif' font-size='56' font-weight='900' fill='white'%3EABC%3C/text%3E%3C/svg%3E"
+  />
+  <link
+    rel="apple-touch-icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3CradialGradient id='g' cx='30%25' cy='30%25' r='80%25'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='0.5' stop-color='%235a2bff'/%3E%3Cstop offset='1' stop-color='%2300ff9a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x='18' y='18' width='144' height='144' rx='34' fill='url(%23g)'/%3E%3Ctext x='90' y='110' text-anchor='middle' font-family='Arial, sans-serif' font-size='70' font-weight='900' fill='white'%3EABC%3C/text%3E%3C/svg%3E"
+  />
+
   <style>
     :root{
       --ink:#0b1020;
@@ -36,7 +50,7 @@
       --bg3:#ffcc00;
       --bg4:#00ff9a;
 
-      --card: rgba(20, 24, 40, .72);
+      --card: rgba(20, 24, 40, .70);
       --key: rgba(255,255,255,.10);
 
       --shadow: 0 18px 55px rgba(0,0,0,.45);
@@ -58,9 +72,11 @@
       margin:0;
       font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--ink);
-      overflow:hidden;
       background: #060819;
+      overflow:hidden;
       touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     /* Animated background layers */
@@ -83,7 +99,7 @@
       position:fixed;
       inset:-40px;
       z-index:-2;
-      opacity:.55;
+      opacity:.52;
       background-image:
         linear-gradient(var(--gridA) 1px, transparent 1px),
         linear-gradient(90deg, var(--gridB) 1px, transparent 1px);
@@ -142,13 +158,14 @@
       flex-direction:column;
       align-items:center;
       justify-content:space-between;
-      padding: clamp(12px, 2.2vw, 24px);
-      padding-bottom: calc(clamp(12px, 2.2vw, 24px) + env(safe-area-inset-bottom));
-      gap: 12px;
+      padding: 18px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      gap: 10px;
     }
 
     header{
-      width: min(1000px, 96vw);
+      width: min(980px, 96vw);
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
@@ -160,16 +177,16 @@
       display:flex;
       flex-direction:column;
       gap: 6px;
-      min-width: 180px;
+      min-width: 200px;
     }
     .title h1{
       margin:0;
-      font-size: clamp(18px, 2.8vw, 28px);
+      font-size: clamp(16px, 2.3vw, 24px);
       letter-spacing: .2px;
       line-height: 1.1;
     }
     .title .hint{
-      font-size: clamp(12px, 2.2vw, 16px);
+      font-size: clamp(12px, 1.8vw, 14px);
       color: var(--muted);
       font-weight: 700;
     }
@@ -177,7 +194,7 @@
     .controls{
       display:flex;
       align-items:center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap:wrap;
       justify-content:flex-end;
     }
@@ -185,13 +202,13 @@
     .pill{
       border:0;
       border-radius:999px;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: rgba(255,255,255,.10);
       color: var(--ink);
       box-shadow: 0 10px 20px rgba(0,0,0,.22);
       cursor:pointer;
       font-weight:800;
-      font-size: 14px;
+      font-size: 13px;
       user-select:none;
       transition: transform 120ms ease, background 200ms ease, opacity 200ms ease;
       backdrop-filter: blur(10px);
@@ -204,14 +221,13 @@
       backdrop-filter: none;
     }
     .pill:active{ transform: scale(.98); }
-    .pill.on{ opacity: 1; }
-    .pill.off{ opacity: .78; }
 
     main{
-      width: min(1000px, 96vw);
+      width: min(980px, 96vw);
       display:grid;
       grid-template-columns: 1fr;
-      gap: clamp(10px, 2vw, 18px);
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 10px;
       align-items:stretch;
       flex: 1 1 auto;
       min-height: 0;
@@ -220,9 +236,9 @@
     .card{
       position:relative;
       background: var(--card);
-      border-radius: 30px;
+      border-radius: 26px;
       box-shadow: var(--shadow);
-      padding: clamp(16px, 2.8vw, 26px);
+      padding: 14px;
       overflow:hidden;
       display:flex;
       flex-direction:column;
@@ -236,28 +252,30 @@
     html[data-theme="light"] .card{ backdrop-filter:none; }
 
     .big{
-      font-size: clamp(140px, 24vw, 280px);
+      font-size: clamp(120px, 18vw, 240px);
       line-height: .95;
       margin: 0;
       letter-spacing: 2px;
-      text-shadow: 0 14px 0 rgba(0,0,0,.18);
-      animation: pop 700ms ease;
+      text-shadow: 0 12px 0 rgba(0,0,0,.18);
+      animation: pop 650ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
     html[data-theme="light"] .big{
-      text-shadow: 0 12px 0 rgba(0,0,0,.07);
+      text-shadow: 0 10px 0 rgba(0,0,0,.07);
     }
 
     .sub{
       margin: 10px 0 0;
-      font-size: clamp(18px, 3.2vw, 34px);
+      font-size: clamp(16px, 2.6vw, 28px);
       font-weight: 900;
     }
 
     .phrase{
       margin: 8px 0 0;
-      font-size: clamp(13px, 2.2vw, 18px);
+      font-size: clamp(12px, 1.8vw, 16px);
       color: var(--muted);
       font-weight:800;
+      min-height: 1.2em;
     }
 
     .spark{
@@ -285,51 +303,34 @@
 
     @keyframes confettiUp{
       0%{ transform: translate(var(--x), var(--y)) scale(1); opacity: .95; }
-      100%{ transform: translate(calc(var(--x) * 2.2), calc(var(--y) * 2.2 - 180px)) scale(.6); opacity: 0; }
+      100%{ transform: translate(calc(var(--x) * 2.2), calc(var(--y) * 2.2 - 170px)) scale(.6); opacity: 0; }
     }
 
     .keyboard{
       background: var(--card);
-      border-radius: 30px;
+      border-radius: 26px;
       box-shadow: var(--shadow);
-      padding: clamp(12px, 2vw, 18px);
+      padding: 12px;
       display:flex;
       flex-direction:column;
-      gap: 10px;
+      gap: 8px;
       user-select:none;
       backdrop-filter: blur(12px);
       min-height: 0;
     }
     html[data-theme="light"] .keyboard{ backdrop-filter:none; }
 
-    .kbTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap:wrap;
-    }
-    .kbTitle .label{
-      font-weight:900;
-      font-size: 16px;
-    }
-    .kbTitle .small{
-      color: var(--muted);
-      font-weight:800;
-      font-size: 13px;
-    }
-
     .row{
       display:flex;
-      gap: 8px;
+      gap: 6px;
       justify-content:center;
       flex-wrap:nowrap;
     }
 
     .key{
       flex: 0 0 auto;
-      width: 56px;
-      height: 52px;
+      width: 50px;
+      height: 48px;
       border-radius: 14px;
       background: var(--key);
       box-shadow: var(--keyShadow);
@@ -337,7 +338,7 @@
       align-items:center;
       justify-content:center;
       font-weight: 900;
-      font-size: 18px;
+      font-size: 17px;
       letter-spacing: .4px;
       transition: transform 90ms ease, background 120ms ease, box-shadow 120ms ease, color 120ms ease;
       color: var(--ink);
@@ -351,9 +352,7 @@
       outline: 1px solid rgba(255,255,255,.08);
     }
 
-    .key:active{
-      transform: translateY(1px) scale(1.02);
-    }
+    .key:active{ transform: translateY(1px) scale(1.02); }
 
     .key.pressed{
       background: var(--keyPressed);
@@ -364,15 +363,16 @@
     }
 
     .wider{
-      width: 300px;
+      width: 280px;
       max-width: 100%;
+      height: 50px;
     }
 
     footer{
-      width:min(1000px, 96vw);
+      width:min(980px, 96vw);
       display:flex;
       align-items:center;
-      justify-content:space-between;
+      justify-content:center;
       gap: 10px;
       flex-wrap:wrap;
       opacity: .92;
@@ -404,10 +404,8 @@
       100%{ transform: translateX(0); }
     }
 
-    /* iPhone-friendly layout */
+    /* iPhone-friendly: fit everything without looking zoomed */
     @media (max-width: 520px){
-      body{ overflow:hidden; }
-
       .wrap{
         padding: 12px;
         padding-top: calc(10px + env(safe-area-inset-top));
@@ -415,21 +413,13 @@
         gap: 10px;
       }
 
-      header, main, footer{
-        width: 100%;
-      }
+      header, main, footer{ width: 100%; }
 
-      .title{
-        min-width: 0;
-      }
-
-      .controls{
-        gap: 8px;
-      }
+      .title{ min-width: 0; }
 
       .pill{
-        padding: 9px 12px;
-        font-size: 13px;
+        padding: 8px 10px;
+        font-size: 12px;
       }
 
       main{
@@ -439,15 +429,15 @@
 
       .card{
         border-radius: 22px;
-        padding: 14px;
+        padding: 12px;
       }
 
       .big{
-        font-size: clamp(120px, 32vw, 210px);
+        font-size: clamp(108px, 30vw, 190px);
       }
 
       .sub{
-        font-size: clamp(18px, 5vw, 26px);
+        font-size: clamp(16px, 4.8vw, 24px);
       }
 
       .keyboard{
@@ -456,47 +446,33 @@
         gap: 8px;
       }
 
-      /* Fit full rows on iPhone (no horizontal scrolling) */
       .row{
         gap: 6px;
         justify-content:center;
       }
 
       .key{
-        width: 36px;
-        height: 52px;
+        width: 32px;
+        height: 48px;
         border-radius: 14px;
-        font-size: 18px;
+        font-size: 16px;
       }
 
-      /* small offsets to feel more like a real keyboard */
-      #row1{ padding-left: 0px; }
+      /* Keyboard stagger like a real layout */
       #row2{ padding-left: 10px; }
       #row3{ padding-left: 22px; }
 
-      #rowSpace{
-        justify-content:center;
-      }
       .wider{
-        width: min(320px, 90vw);
-        height: 54px;
-        font-size: 18px;
-      }
-
-      /* Keep footer compact */
-      footer{
-        gap: 8px;
-      }
-      footer .badge{
-        font-size: 11px;
+        width: min(300px, 90vw);
+        height: 50px;
+        font-size: 16px;
       }
     }
 
-    /* Slightly larger phones */
-    @media (min-width: 521px) and (max-width: 700px){
+    @media (min-width: 521px) and (max-width: 720px){
       header, main, footer{ width: 100%; }
-      .key{ width: 44px; }
-      .wider{ width: min(360px, 92vw); }
+      .key{ width: 42px; }
+      .wider{ width: min(340px, 92vw); }
       #row2{ padding-left: 10px; }
       #row3{ padding-left: 18px; }
     }
@@ -510,13 +486,13 @@
   <div class="wrap">
     <header>
       <div class="title">
-        <h1>Keyboard ABC Play</h1>
-        <div class="hint">Press keys or tap the on-screen buttons</div>
+        <h1>Little Typist ABC</h1>
+        <div class="hint">Tap letters, numbers, or use a keyboard</div>
       </div>
       <div class="controls">
-        <button id="themeBtn" class="pill on" type="button" aria-pressed="true">Theme: Dark</button>
-        <button id="voiceBtn" class="pill on" type="button" aria-pressed="true">Voice: ON</button>
-        <button id="soundBtn" class="pill on" type="button" aria-pressed="true">Beep: ON</button>
+        <button id="themeBtn" class="pill" type="button" aria-pressed="true">Theme: Dark</button>
+        <button id="voiceBtn" class="pill" type="button" aria-pressed="true">Voice: ON</button>
+        <button id="soundBtn" class="pill" type="button" aria-pressed="true">Beep: ON</button>
         <button id="fullBtn" class="pill" type="button">Fullscreen</button>
         <button id="resetBtn" class="pill" type="button">Reset</button>
       </div>
@@ -525,17 +501,12 @@
     <main>
       <section class="card" id="card" aria-live="polite">
         <div class="spark" id="spark"></div>
-        <p class="big" id="big">A</p>
+        <p class="big" id="big" title="(shh… there is a secret)">A</p>
         <div class="sub" id="sub">Apple 🍎</div>
-        <div class="phrase" id="phrase">Press a key or tap a button below!</div>
+        <div class="phrase" id="phrase">Press or tap a key!</div>
       </section>
 
       <aside class="keyboard" aria-label="On-screen keys">
-        <div class="kbTitle">
-          <div class="label">Tap keys (works on phones and iPads)</div>
-          <div class="small">No keyboard needed</div>
-        </div>
-
         <div class="row" id="rowNums"></div>
         <div class="row" id="row1"></div>
         <div class="row" id="row2"></div>
@@ -545,7 +516,6 @@
     </main>
 
     <footer>
-      <div class="badge">Tip: Try A S D then J K L</div>
       <div class="badge">If voice is silent, tap once to allow audio</div>
     </footer>
   </div>
@@ -585,7 +555,7 @@
     let beepOn = true;
 
     function tinyVibrate(){
-      if ("vibrate" in navigator) navigator.vibrate(15);
+      if ("vibrate" in navigator) navigator.vibrate(12);
     }
 
     // Speech
@@ -602,11 +572,12 @@
       u.volume = 1;
 
       const voices = window.speechSynthesis.getVoices();
-      const preferred = voices.find(v => /en-GB/i.test(v.lang)) ||
-                        voices.find(v => /en/i.test(v.lang)) ||
-                        voices[0];
-      if (preferred) u.voice = preferred;
+      const preferred =
+        voices.find(v => /en-GB/i.test(v.lang)) ||
+        voices.find(v => /en/i.test(v.lang)) ||
+        voices[0];
 
+      if (preferred) u.voice = preferred;
       window.speechSynthesis.speak(u);
     }
 
@@ -644,7 +615,7 @@
       o.frequency.setValueAtTime(freq, t);
 
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.20);
 
       o.connect(g);
@@ -654,9 +625,9 @@
     }
 
     // Confetti burst
-    function burst(){
+    function burst(extra=false){
       spark.innerHTML = "";
-      const count = 22;
+      const count = extra ? 46 : 22;
       const rect = card.getBoundingClientRect();
       const cx = rect.width / 2;
       const cy = rect.height / 2;
@@ -666,7 +637,7 @@
         dot.className = "floaty";
 
         const angle = (Math.PI * 2) * (i / count) + (Math.random() * 0.35);
-        const dist = 10 + Math.random() * 28;
+        const dist = (extra ? 18 : 10) + Math.random() * (extra ? 46 : 28);
 
         const x = Math.cos(angle) * dist;
         const y = Math.sin(angle) * dist;
@@ -677,7 +648,7 @@
         dot.style.setProperty("--y", y + "px");
 
         dot.style.background = `hsl(${Math.floor(Math.random()*360)} 95% 65%)`;
-        dot.style.width = (10 + Math.random()*12) + "px";
+        dot.style.width = (10 + Math.random()*(extra ? 14 : 12)) + "px";
         dot.style.height = dot.style.width;
 
         spark.appendChild(dot);
@@ -692,7 +663,7 @@
       const b = document.createElement("div");
       b.className = "bubble";
 
-      const size = Math.floor(randomBetween(40, 140));
+      const size = Math.floor(randomBetween(40, 130));
       const x = Math.floor(randomBetween(0, window.innerWidth));
       const dx = Math.floor(randomBetween(-140, 140));
       const d = randomBetween(7, 14).toFixed(2) + "s";
@@ -709,16 +680,16 @@
     }
 
     (function startBubbles(){
-      for (let i=0;i<10;i++) spawnBubble();
+      for (let i=0;i<9;i++) spawnBubble();
       setInterval(() => {
         const count = bgBubbles.childElementCount;
-        const want = 14;
+        const want = 12;
         if (count < want) spawnBubble();
         else if (Math.random() < 0.35) spawnBubble();
-      }, 650);
+      }, 700);
     })();
 
-    // On-screen keyboard (clickable)
+    // On-screen keyboard (tap + keyboard)
     const layout = {
       nums: ["1","2","3","4","5","6","7","8","9","0"],
       r1: ["Q","W","E","R","T","Y","U","I","O","P"],
@@ -768,7 +739,7 @@
       }
 
       phrase.textContent = cheerPhrases[Math.floor(Math.random() * cheerPhrases.length)];
-      burst();
+      burst(false);
       tinyVibrate();
 
       beepFor(char);
@@ -865,34 +836,37 @@
       card.classList.remove("shake");
       void card.offsetWidth;
       card.classList.add("shake");
-      phrase.textContent = "Try a letter (A to Z) or a number (0 to 9)!";
+      phrase.textContent = "Try A to Z or 0 to 9";
     }
 
     window.addEventListener("keydown", handleKeydown, { passive: false });
 
     // Controls
+    function updateButtons(){
+      const theme = htmlEl.getAttribute("data-theme");
+      themeBtn.textContent = `Theme: ${theme === "dark" ? "Dark" : "Light"}`;
+      voiceBtn.textContent = `Voice: ${voiceOn ? "ON" : "OFF"}`;
+      soundBtn.textContent = `Beep: ${beepOn ? "ON" : "OFF"}`;
+      themeBtn.setAttribute("aria-pressed", String(theme === "dark"));
+      voiceBtn.setAttribute("aria-pressed", String(voiceOn));
+      soundBtn.setAttribute("aria-pressed", String(beepOn));
+    }
+
     themeBtn.addEventListener("click", () => {
       const now = htmlEl.getAttribute("data-theme") === "dark" ? "light" : "dark";
       htmlEl.setAttribute("data-theme", now);
-      themeBtn.textContent = `Theme: ${now === "dark" ? "Dark" : "Light"}`;
-      themeBtn.setAttribute("aria-pressed", String(now === "dark"));
+      updateButtons();
     });
 
     voiceBtn.addEventListener("click", () => {
       voiceOn = !voiceOn;
-      voiceBtn.textContent = `Voice: ${voiceOn ? "ON" : "OFF"}`;
-      voiceBtn.classList.toggle("on", voiceOn);
-      voiceBtn.classList.toggle("off", !voiceOn);
-      voiceBtn.setAttribute("aria-pressed", String(voiceOn));
+      updateButtons();
       if (voiceOn && "speechSynthesis" in window) window.speechSynthesis.getVoices();
     });
 
     soundBtn.addEventListener("click", () => {
       beepOn = !beepOn;
-      soundBtn.textContent = `Beep: ${beepOn ? "ON" : "OFF"}`;
-      soundBtn.classList.toggle("on", beepOn);
-      soundBtn.classList.toggle("off", !beepOn);
-      soundBtn.setAttribute("aria-pressed", String(beepOn));
+      updateButtons();
       if (beepOn) ensureAudio();
     });
 
@@ -906,7 +880,7 @@
           fullBtn.textContent = "Fullscreen";
         }
       } catch {
-        phrase.textContent = "Fullscreen may be blocked in this browser.";
+        phrase.textContent = "Fullscreen may be blocked";
       }
     });
 
@@ -917,7 +891,7 @@
     resetBtn.addEventListener("click", () => {
       big.textContent = "A";
       sub.textContent = "Apple 🍎";
-      phrase.textContent = "Press a key or tap a button below!";
+      phrase.textContent = "Press or tap a key!";
       if (lastPressedEl) lastPressedEl.classList.remove("pressed");
       lastPressedEl = null;
       spark.innerHTML = "";
@@ -929,6 +903,25 @@
       if (beepOn) ensureAudio();
       if (voiceOn && "speechSynthesis" in window) window.speechSynthesis.getVoices();
     }, { once: true });
+
+    // Tiny secret (no on-screen hint): tap the big letter 7 times quickly
+    let tapCount = 0;
+    let tapTimer = null;
+    big.addEventListener("pointerdown", () => {
+      tapCount += 1;
+      if (tapTimer) clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 650);
+
+      if (tapCount >= 7){
+        tapCount = 0;
+        phrase.textContent = "Secret sparkle!";
+        burst(true);
+        speak("Yay!");
+        tinyVibrate();
+      }
+    });
+
+    updateButtons();
   </script>
 </body>
 </html>
