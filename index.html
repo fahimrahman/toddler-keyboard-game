@@ -8,7 +8,7 @@
   />
   <title>Little Typist ABC</title>
 
-  <!-- Simple built-in favicon (no extra files needed) -->
+  <!-- Built-in favicon (no extra files needed) -->
   <link
     rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3CradialGradient id='g' cx='30%25' cy='30%25' r='80%25'%3E%3Cstop offset='0' stop-color='%2300e5ff'/%3E%3Cstop offset='0.5' stop-color='%235a2bff'/%3E%3Cstop offset='1' stop-color='%2300ff9a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect x='10' y='10' width='108' height='108' rx='26' fill='url(%23g)'/%3E%3Ctext x='64' y='78' text-anchor='middle' font-family='Arial, sans-serif' font-size='56' font-weight='900' fill='white'%3EABC%3C/text%3E%3C/svg%3E"
@@ -554,31 +554,64 @@
     let voiceOn = true;
     let beepOn = true;
 
+    // iOS/Safari: only speak after first user interaction
+    let audioUnlocked = false;
+
+    function unlockAudioOnce(){
+      audioUnlocked = true;
+      if (beepOn) ensureAudio();
+      if ("speechSynthesis" in window) window.speechSynthesis.getVoices();
+    }
+
+    window.addEventListener("pointerdown", unlockAudioOnce, { once: true });
+
     function tinyVibrate(){
       if ("vibrate" in navigator) navigator.vibrate(12);
     }
 
-    // Speech
+    // Speech helpers
+    function getPreferredVoice(){
+      if (!("speechSynthesis" in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      return (
+        voices.find(v => /en-GB/i.test(v.lang)) ||
+        voices.find(v => /^en/i.test(v.lang)) ||
+        voices[0] ||
+        null
+      );
+    }
+
     function speak(text){
       if (!voiceOn) return;
       if (!("speechSynthesis" in window)) return;
 
-      window.speechSynthesis.cancel();
+      // Helps iOS: do not attempt before user gesture
+      if (!audioUnlocked) return;
 
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-GB";
-      u.rate = 0.9;
-      u.pitch = 1.15;
-      u.volume = 1;
+      try{
+        window.speechSynthesis.cancel();
 
-      const voices = window.speechSynthesis.getVoices();
-      const preferred =
-        voices.find(v => /en-GB/i.test(v.lang)) ||
-        voices.find(v => /en/i.test(v.lang)) ||
-        voices[0];
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-GB";
+        u.rate = 0.95;
+        u.pitch = 1.1;
+        u.volume = 1;
 
-      if (preferred) u.voice = preferred;
-      window.speechSynthesis.speak(u);
+        const v = getPreferredVoice();
+        if (v) u.voice = v;
+
+        window.speechSynthesis.speak(u);
+      } catch {
+        // If speech fails, silently skip
+      }
+    }
+
+    // IMPORTANT: for macOS "capital A" issue, speak "A." (not "A")
+    function speechForKey(char){
+      if (/^[A-Z]$/.test(char)) return `${char}.`;
+      if (/^[0-9]$/.test(char)) return `${char}.`;
+      if (char === "SPACE") return "space";
+      return "";
     }
 
     window.speechSynthesis?.addEventListener?.("voiceschanged", () => {
@@ -689,7 +722,7 @@
       }, 700);
     })();
 
-    // On-screen keyboard (tap + keyboard)
+    // On-screen keyboard
     const layout = {
       nums: ["1","2","3","4","5","6","7","8","9","0"],
       r1: ["Q","W","E","R","T","Y","U","I","O","P"],
@@ -743,9 +776,9 @@
       tinyVibrate();
 
       beepFor(char);
-      if (/^[A-Z]$/.test(char)) speak(char);
-      else if (/^[0-9]$/.test(char)) speak(String(Number(char)));
-      else if (char === "SPACE") speak("space");
+
+      const say = speechForKey(char);
+      if (say) speak(say);
     }
 
     function pressKey(label){
@@ -898,12 +931,6 @@
       window.speechSynthesis?.cancel?.();
     });
 
-    // Prime audio on first interaction (tap counts on iOS)
-    window.addEventListener("pointerdown", () => {
-      if (beepOn) ensureAudio();
-      if (voiceOn && "speechSynthesis" in window) window.speechSynthesis.getVoices();
-    }, { once: true });
-
     // Tiny secret (no on-screen hint): tap the big letter 7 times quickly
     let tapCount = 0;
     let tapTimer = null;
@@ -916,7 +943,8 @@
         tapCount = 0;
         phrase.textContent = "Secret sparkle!";
         burst(true);
-        speak("Yay!");
+        const say = "Yay!";
+        speak(say);
         tinyVibrate();
       }
     });
